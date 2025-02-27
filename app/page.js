@@ -1,11 +1,13 @@
 import { Button } from "@/components/ui/button";
-import { ArrowRight, Sun } from "lucide-react";
+import { GridPattern } from "@/components/ui/grid-pattern";
+import { cn } from "@/lib/utils";
+import { ArrowRight } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 
 export default function LandingPage() {
     return (
-        <div className="flex min-h-dvh flex-col bg-gradient-to-b from-white to-slate-50">
+        <div className="flex min-h-dvh flex-col">
             <div className="border-b shadow-sm">
                 <div className="mx-auto max-w-6xl px-6 sm:px-8">
                     <header className="flex items-center justify-between py-6">
@@ -18,12 +20,11 @@ export default function LandingPage() {
                                 alt="Joblet logo"
                                 width={28}
                                 height={28}
+                                className="fill-current"
                             />
-                            <span className="text-2xl font-bold text-primary">
-                                Joblet
-                            </span>
+                            <span className="text-2xl font-bold">Joblet</span>
                         </Link>
-                        <nav className="flex items-center gap-4">
+                        <nav className="flex items-center gap-2 sm:gap-4">
                             <Button variant="ghost" size="icon">
                                 <Sun />
                             </Button>
@@ -37,7 +38,7 @@ export default function LandingPage() {
                             <Button
                                 variant="outline"
                                 asChild
-                                className="border-primary/20 font-medium hover:bg-primary/5"
+                                className="border-primary font-medium hover:bg-primary/5"
                             >
                                 <Link
                                     href="/login"
@@ -51,18 +52,32 @@ export default function LandingPage() {
                     </header>
                 </div>
             </div>
-            <main className="mx-auto flex max-w-6xl flex-1 items-center px-6 py-16 sm:px-8">
-                <div className="grid grid-cols-1 items-center gap-12 md:grid-cols-5">
+            <main className="relative flex flex-1 items-center py-16">
+                <GridPattern
+                    width={20}
+                    height={20}
+                    x={-1}
+                    y={-1}
+                    className={cn(
+                        "absolute -z-10 [mask-image:linear-gradient(to_bottom_right,white,transparent,transparent)]",
+                    )}
+                />
+                <div className="mx-auto grid max-w-6xl grid-cols-1 items-center gap-12 px-6 sm:px-8 md:grid-cols-5">
                     <div className="col-span-1 grid gap-6 md:col-span-3">
-                        <h1 className="text-5xl font-extrabold tracking-tight text-gray-900 sm:text-6xl">
+                        <h1 className="text-5xl font-extrabold tracking-tight sm:text-6xl">
                             Track Every Step of Your{" "}
-                            <span className="text-primary">Job Search</span>
+                            <span className="bg-gradient-to-r from-[hsl(var(--primary))] to-violet-400 bg-clip-text text-transparent">
+                                Job Search
+                            </span>
                         </h1>
-                        <p className="font-muted-foreground max-w-xl text-xl leading-relaxed">
-                            Job application tracking made simple. Never miss an
-                            opportunity again.
+                        <p className="max-w-xl text-xl leading-normal text-muted-foreground">
+                            Job application tracking made simple.{" "}
+                            <span className="text-muted-foreground">
+                                Stay organized and keep every opportunity within
+                                reach.
+                            </span>
                         </p>
-                        <div className="pt-4">
+                        <div className="pt-3">
                             <Button
                                 asChild
                                 size="lg"
@@ -70,6 +85,9 @@ export default function LandingPage() {
                             >
                                 <Link href="/signup">Get Started</Link>
                             </Button>
+                            <span className="block w-full pt-3 text-sm text-muted-foreground/65">
+                                Free to use. No credit card required.
+                            </span>
                         </div>
                     </div>
                     <div className="col-span-1 flex justify-center md:col-span-2 md:justify-end">
