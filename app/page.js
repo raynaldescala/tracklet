@@ -1,5 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { GridPattern } from "@/components/ui/grid-pattern";
+import ThemeSwitcher from "@/components/ui/theme-switcher";
 import { cn } from "@/lib/utils";
 import { ArrowRight } from "lucide-react";
 import Image from "next/image";
@@ -25,9 +26,7 @@ export default function LandingPage() {
                             <span className="text-2xl font-bold">Joblet</span>
                         </Link>
                         <nav className="flex items-center gap-2 sm:gap-4">
-                            <Button variant="ghost" size="icon">
-                                <Sun />
-                            </Button>
+                            <ThemeSwitcher />
                             <Button
                                 variant="ghost"
                                 asChild
