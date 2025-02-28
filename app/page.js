@@ -18,12 +18,12 @@ export default function LandingPage() {
                         >
                             <Image
                                 src="/logo.svg"
-                                alt="Joblet logo"
+                                alt="Tracklet logo"
                                 width={28}
                                 height={28}
                                 className="fill-current"
                             />
-                            <span className="text-2xl font-bold">Joblet</span>
+                            <span className="text-2xl font-bold">Tracklet</span>
                         </Link>
                         <nav className="flex items-center gap-2 sm:gap-4">
                             <ThemeSwitcher />
