@@ -1,6 +1,6 @@
-import { Button } from "@/components/ui/button";
-import { GridPattern } from "@/components/ui/grid-pattern";
-import ThemeSwitcher from "@/components/ui/theme-switcher";
+import { Button } from "@/app/components/ui/button";
+import { GridPattern } from "@/app/components/ui/grid-pattern";
+import ThemeSwitcher from "@/app/components/ui/theme-switcher";
 import { cn } from "@/lib/utils";
 import { ArrowRight } from "lucide-react";
 import Image from "next/image";
