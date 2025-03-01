@@ -1,3 +1,4 @@
+import { Toaster } from "@/app/components/ui/sonner";
 import { Inter } from "next/font/google";
 import "../styles/globals.css";
 import Providers from "./providers";
@@ -19,6 +20,7 @@ export default function RootLayout({ children }) {
             <body className={`${inter.variable} font-sans antialiased`}>
                 <Providers attribute="class" defaultTheme="system" enableSystem>
                     {children}
+                    <Toaster />
                 </Providers>
             </body>
         </html>
