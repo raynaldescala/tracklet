@@ -40,7 +40,7 @@ export default function LandingPage() {
                                 size="lg"
                                 className="w-fit bg-primary px-8 py-6 text-lg shadow-lg transition-all hover:translate-y-[-2px] hover:bg-primary/90 hover:shadow-xl"
                             >
-                                <Link href="/signup">Get Started</Link>
+                                <Link href="/auth/sign-up">Get Started</Link>
                             </Button>
                             <span className="block w-full pt-3 text-sm text-muted-foreground/65">
                                 Free to use. No credit card required.

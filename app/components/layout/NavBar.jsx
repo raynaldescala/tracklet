@@ -29,7 +29,7 @@ const NavBar = () => {
                             asChild
                             className="hidden font-medium transition-colors hover:text-primary sm:block"
                         >
-                            <Link href="/signup">Sign up</Link>
+                            <Link href="/auth/sign-up">Sign up</Link>
                         </Button>
                         <Button
                             variant="outline"
@@ -37,7 +37,7 @@ const NavBar = () => {
                             className="border-primary font-medium hover:bg-primary/5"
                         >
                             <Link
-                                href="/login"
+                                href="/auth/login"
                                 className="flex items-center gap-1"
                             >
                                 Login <ArrowRight className="ml-1 h-4 w-4" />
