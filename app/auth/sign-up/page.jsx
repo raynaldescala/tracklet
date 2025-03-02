@@ -2,6 +2,8 @@
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
@@ -26,8 +28,9 @@ import {
 } from "@/app/components/ui/form";
 import { Input } from "@/app/components/ui/input";
 import { PasswordInput } from "@/app/components/ui/password-input";
+import { signUp } from "@/lib/supabase/auth/actions";
+import { Loader2 } from "lucide-react";
 
-// Define validation schema using Zod
 const formSchema = z.object({
     name: z
         .string()
@@ -40,6 +43,8 @@ const formSchema = z.object({
 });
 
 export default function SignUpPage() {
+    const router = useRouter();
+    const [isLoading, setIsLoading] = useState(false); // Add loading state
     const form = useForm({
         resolver: zodResolver(formSchema),
         defaultValues: {
@@ -50,19 +55,25 @@ export default function SignUpPage() {
     });
 
     async function onSubmit(values) {
+        setIsLoading(true);
+
         try {
-            // Assuming an async registration function
-            console.log(values);
-            toast(
-                <pre className="mt-2 w-[340px] rounded-md bg-slate-950 p-4">
-                    <code className="text-white">
-                        {JSON.stringify(values, null, 2)}
-                    </code>
-                </pre>,
-            );
+            const result = await signUp({
+                email: values.email,
+                password: values.password,
+                name: values.name,
+            });
+
+            if (result.error) {
+                toast.error("Sign Up failed: " + result.error);
+            } else {
+                toast.success("Sign Up successful!");
+                router.push("/dashboard");
+            }
         } catch (error) {
-            console.error("Form submission error", error);
-            toast.error("Failed to submit the form. Please try again.");
+            toast.error("An unexpected error occurred");
+        } finally {
+            setIsLoading(false);
         }
     }
 
@@ -97,6 +108,7 @@ export default function SignUpPage() {
                                                     <Input
                                                         id="name"
                                                         placeholder="John Doe"
+                                                        disabled={isLoading}
                                                         {...field}
                                                     />
                                                 </FormControl>
@@ -120,6 +132,7 @@ export default function SignUpPage() {
                                                         placeholder="johndoe@mail.com"
                                                         type="email"
                                                         autoComplete="email"
+                                                        disabled={isLoading}
                                                         {...field}
                                                     />
                                                 </FormControl>
@@ -142,6 +155,7 @@ export default function SignUpPage() {
                                                         id="password"
                                                         placeholder="******"
                                                         autoComplete="new-password"
+                                                        disabled={isLoading}
                                                         {...field}
                                                     />
                                                 </FormControl>
@@ -150,8 +164,16 @@ export default function SignUpPage() {
                                         )}
                                     />
 
-                                    <Button type="submit" className="w-full">
-                                        Sign Up
+                                    <Button
+                                        type="submit"
+                                        className="w-full"
+                                        disabled={isLoading}
+                                    >
+                                        {isLoading ? (
+                                            <Loader2 className="h-4 w-4 animate-spin text-muted-foreground" />
+                                        ) : (
+                                            "Sign Up"
+                                        )}
                                     </Button>
                                     <div className="flex w-full items-center">
                                         <div className="h-[1px] w-full border-t" />
@@ -163,6 +185,7 @@ export default function SignUpPage() {
                                     <Button
                                         variant="outline"
                                         className="flex w-full items-center gap-3"
+                                        disabled={isLoading}
                                     >
                                         <svg
                                             xmlns="http://www.w3.org/2000/svg"
