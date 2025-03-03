@@ -80,7 +80,7 @@ export default function SignUpPage() {
     return (
         <div className="flex min-h-dvh flex-col">
             <NavBar />
-            <div className="flex flex-1 flex-col items-center justify-center px-6 pb-16 pt-20 sm:px-8 sm:pb-0 sm:pt-0">
+            <div className="flex flex-1 flex-col items-center justify-center px-6 pb-16 pt-20 sm:px-8 sm:py-8">
                 <Card className="mx-auto max-w-sm">
                     <CardHeader>
                         <CardTitle className="text-2xl">Sign Up</CardTitle>
