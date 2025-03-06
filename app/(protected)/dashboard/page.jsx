@@ -1,3 +1,5 @@
+import StatusChart from "@/app/components/ui/app-status-chart";
+import ConversionFunnel from "@/app/components/ui/conversion-funnel-chart";
 import { Progress } from "@/app/components/ui/progress";
 import { CircleCheck, FileEdit, MessagesSquare, Users } from "lucide-react";
 
@@ -66,6 +68,14 @@ export default function DashboardPage() {
                     <p className="text-xs text-muted-foreground/65">
                         3 in progress
                     </p>
+                </div>
+            </div>
+            <div className="grid gap-4 lg:grid-cols-5">
+                <div className="lg:col-span-2">
+                    <StatusChart />
+                </div>
+                <div className="lg:col-span-3">
+                    <ConversionFunnel />
                 </div>
             </div>
         </div>
