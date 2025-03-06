@@ -16,7 +16,7 @@ import Link from "next/link";
 
 const navItems = [
     {
-        label: "Home",
+        label: "Dashboard",
         url: "/dashboard",
         icon: Home,
     },
