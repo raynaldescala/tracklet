@@ -3,6 +3,17 @@
 @tailwind utilities;
 
 @layer base {
+    * {
+        scrollbar-width: thin;
+    }
+
+    *::-webkit-scrollbar {
+        width: 4px;
+        height: 4px;
+    }
+}
+
+@layer base {
     :root {
         /* Base (Light) Theme */
         --background: 0 0% 100%;
