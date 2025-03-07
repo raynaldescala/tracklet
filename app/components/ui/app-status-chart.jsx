@@ -60,7 +60,7 @@ export default function StatusChart() {
             <CardContent className="flex flex-1 items-center p-0">
                 <ChartContainer
                     config={chartConfig}
-                    className="mx-auto aspect-square max-h-[250px] w-full"
+                    className="mx-auto aspect-square max-h-[350px] w-full max-w-[350px]"
                 >
                     <PieChart>
                         <ChartTooltip
