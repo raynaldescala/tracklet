@@ -60,7 +60,7 @@ export default function ConversionFunnel() {
             <CardContent className="flex flex-1 p-0">
                 <ChartContainer
                     config={chartConfig}
-                    className="aspect-square max-h-[250px] min-h-[150px] w-full"
+                    className="mx-auto aspect-square max-h-[350px] w-full max-w-[500px]"
                 >
                     <BarChart data={chartData} margin={{ top: 20 }}>
                         <CartesianGrid vertical={false} />
