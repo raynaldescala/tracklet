@@ -5,7 +5,7 @@ import { CircleCheck, FileEdit, MessagesSquare, Users } from "lucide-react";
 
 export default function DashboardPage() {
     return (
-        <div className="grid gap-6 p-4 duration-500 animate-in fade-in sm:p-6">
+        <div className="grid gap-6 duration-500 animate-in fade-in">
             <div>
                 <h1 className="text-3xl font-bold tracking-tight">Dashboard</h1>
                 <p className="text-muted-foreground">
