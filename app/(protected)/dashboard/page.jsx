@@ -70,11 +70,11 @@ export default function DashboardPage() {
                     </p>
                 </div>
             </div>
-            <div className="grid gap-4 lg:grid-cols-5">
-                <div className="lg:col-span-2">
+            <div className="grid gap-4 lg:grid-cols-9">
+                <div className="lg:col-span-4">
                     <StatusChart />
                 </div>
-                <div className="lg:col-span-3">
+                <div className="lg:col-span-5">
                     <ConversionFunnel />
                 </div>
             </div>
