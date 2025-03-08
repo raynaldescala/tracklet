@@ -82,7 +82,7 @@ const getStatusBadge = (status) => {
 export default function ApplicationsPage() {
     return (
         <div className="grid gap-6 duration-500 animate-in fade-in">
-            <div className="flex items-center justify-between">
+            <div className="flex flex-col justify-between gap-3 sm:flex-row sm:items-center sm:gap-6">
                 <div>
                     <h1 className="text-3xl font-bold tracking-tight">
                         Applications
@@ -91,7 +91,7 @@ export default function ApplicationsPage() {
                         Track and manage your job applications in one place.
                     </p>
                 </div>
-                <Button>Add Application</Button>
+                <Button className="w-fit">Add Application</Button>
             </div>
 
             <div className="overflow-x-auto rounded-lg border shadow-sm">
