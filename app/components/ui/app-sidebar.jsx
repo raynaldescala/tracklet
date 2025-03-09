@@ -1,4 +1,4 @@
-import { BarChart3, FileEdit, Home, MessageSquareText } from "lucide-react";
+"use client";
 
 import {
     Sidebar,
@@ -10,34 +10,28 @@ import {
     SidebarMenu,
     SidebarMenuButton,
     SidebarMenuItem,
+    useSidebar,
 } from "@/app/components/ui/sidebar";
+import { BarChart3, FileEdit, Home, MessageSquareText } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 
 const navItems = [
-    {
-        label: "Dashboard",
-        url: "/dashboard",
-        icon: Home,
-    },
-    {
-        label: "Applications",
-        url: "/applications",
-        icon: FileEdit,
-    },
-    {
-        label: "Analytics",
-        url: "/analytics",
-        icon: BarChart3,
-    },
-    {
-        label: "Feedback",
-        url: "/feedback",
-        icon: MessageSquareText,
-    },
+    { label: "Dashboard", url: "/dashboard", icon: Home },
+    { label: "Applications", url: "/applications", icon: FileEdit },
+    { label: "Analytics", url: "/analytics", icon: BarChart3 },
+    { label: "Feedback", url: "/feedback", icon: MessageSquareText },
 ];
 
 export function AppSidebar() {
+    const { isMobile, setOpenMobile } = useSidebar();
+
+    const handleNavClick = () => {
+        if (isMobile) {
+            setOpenMobile(false);
+        }
+    };
+
     return (
         <Sidebar collapsible="icon">
             <SidebarHeader>
@@ -75,6 +69,7 @@ export function AppSidebar() {
                                     <SidebarMenuButton asChild className="px-4">
                                         <Link
                                             href={item.url}
+                                            onClick={handleNavClick}
                                             className="flex gap-4"
                                         >
                                             <item.icon />
