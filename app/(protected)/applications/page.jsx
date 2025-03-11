@@ -134,7 +134,9 @@ export default function ApplicationsPage() {
                                     <Badge
                                         className={`font-semibold ${getStatusBadge(app.status)}`}
                                     >
-                                        {app.status}
+                                        <span className="text-slate-100">
+                                            {app.status}
+                                        </span>
                                     </Badge>
                                 </TableCell>
                                 <TableCell className="whitespace-nowrap p-4">
