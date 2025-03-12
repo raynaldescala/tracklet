@@ -15,6 +15,7 @@ import {
 import { BarChart3, FileEdit, Home, MessageSquareText } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 
 const navItems = [
     { label: "Dashboard", url: "/dashboard", icon: Home },
@@ -25,6 +26,7 @@ const navItems = [
 
 export function AppSidebar() {
     const { isMobile, setOpenMobile } = useSidebar();
+    const pathname = usePathname();
 
     const handleNavClick = () => {
         if (isMobile) {
@@ -66,7 +68,11 @@ export function AppSidebar() {
                         <SidebarMenu>
                             {navItems.map((item) => (
                                 <SidebarMenuItem key={item.label}>
-                                    <SidebarMenuButton asChild className="px-4">
+                                    <SidebarMenuButton
+                                        asChild
+                                        isActive={pathname.startsWith(item.url)}
+                                        className="px-4"
+                                    >
                                         <Link
                                             href={item.url}
                                             onClick={handleNavClick}
