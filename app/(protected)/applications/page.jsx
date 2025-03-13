@@ -10,7 +10,6 @@ import {
 } from "@/app/components/ui/table";
 import { MoreHorizontal } from "lucide-react";
 
-// Extracted from the screenshot
 const applications = [
     {
         company: "Acme Inc",
@@ -67,15 +66,15 @@ const applications = [
 const getStatusBadge = (status) => {
     switch (status) {
         case "Applied":
-            return "bg-chart-1 text-foreground";
+            return "bg-chart-1 hover:bg-chart-1/80 text-foreground";
         case "Interviewing":
-            return "bg-chart-2 text-foreground";
+            return "bg-chart-2 hover:bg-chart-2/80 text-foreground";
         case "Offered":
-            return "bg-chart-3 text-foreground";
+            return "bg-chart-3 hover:bg-chart-3/80 text-foreground";
         case "Rejected":
-            return "bg-chart-4 text-foreground";
+            return "bg-chart-4 hover:bg-chart-4/80 text-foreground";
         default:
-            return "bg-gray-100 text-foreground";
+            return "bg-gray-100 hover:bg-gray-100/80 text-foreground";
     }
 };
 
