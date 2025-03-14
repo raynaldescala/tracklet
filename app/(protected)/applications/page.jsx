@@ -1,6 +1,13 @@
 import { Badge } from "@/app/components/ui/badge";
 import { Button } from "@/app/components/ui/button";
 import {
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuItem,
+    DropdownMenuSeparator,
+    DropdownMenuTrigger,
+} from "@/app/components/ui/dropdown-menu";
+import {
     Table,
     TableBody,
     TableCell,
@@ -8,7 +15,7 @@ import {
     TableHeader,
     TableRow,
 } from "@/app/components/ui/table";
-import { MoreHorizontal } from "lucide-react";
+import { Eye, MoreHorizontal, Pencil, Trash2 } from "lucide-react";
 
 const applications = [
     {
@@ -142,13 +149,32 @@ export default function ApplicationsPage() {
                                     {app.followUp}
                                 </TableCell>
                                 <TableCell className="whitespace-nowrap p-4 text-right">
-                                    <Button
-                                        variant="ghost"
-                                        size="icon"
-                                        className="h-8 w-8"
-                                    >
-                                        <MoreHorizontal className="h-4 w-4" />
-                                    </Button>
+                                    <DropdownMenu>
+                                        <DropdownMenuTrigger asChild>
+                                            <Button
+                                                variant="ghost"
+                                                size="icon"
+                                                className="h-8 w-8"
+                                            >
+                                                <MoreHorizontal className="h-4 w-4" />
+                                            </Button>
+                                        </DropdownMenuTrigger>
+                                        <DropdownMenuContent align="end">
+                                            <DropdownMenuItem>
+                                                <Eye className="mr-1 h-4 w-4" />{" "}
+                                                View Details
+                                            </DropdownMenuItem>
+                                            <DropdownMenuItem>
+                                                <Pencil className="mr-1 h-4 w-4" />{" "}
+                                                Edit Application
+                                            </DropdownMenuItem>
+                                            <DropdownMenuSeparator />
+                                            <DropdownMenuItem>
+                                                <Trash2 className="mr-1 h-4 w-4" />{" "}
+                                                Delete Application
+                                            </DropdownMenuItem>
+                                        </DropdownMenuContent>
+                                    </DropdownMenu>
                                 </TableCell>
                             </TableRow>
                         ))}
