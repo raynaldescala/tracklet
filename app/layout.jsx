@@ -20,7 +20,7 @@ export default function RootLayout({ children }) {
             <body className={`${inter.variable} font-sans antialiased`}>
                 <Providers attribute="class" defaultTheme="system" enableSystem>
                     {children}
-                    <Toaster />
+                    <Toaster richColors position="top-right" />
                 </Providers>
             </body>
         </html>
