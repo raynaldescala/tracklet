@@ -60,8 +60,18 @@ export default function LoginPage() {
 
             if (result.error) {
                 toast.error("Login failed: " + result.error);
+                // toast.error("Login failed: " + result.error, {
+                //     className: "relative font-sans",
+                //     description: (
+                //         <button
+                //             className="absolute right-0 top-0 mr-2 mt-2 hover:text-muted-foreground"
+                //             onClick={() => toast.dismiss()}
+                //         >
+                //             <X size={16} />
+                //         </button>
+                //     ),
+                // });
             } else {
-                toast.success("Login successful!");
                 router.push("/dashboard");
             }
         } catch (error) {

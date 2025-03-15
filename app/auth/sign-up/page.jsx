@@ -64,6 +64,17 @@ export default function SignUpPage() {
 
             if (result.error) {
                 toast.error("Sign Up failed: " + result.error);
+                // toast.error("Sign Up failed: " + result.error, {
+                //     className: "relative font-sans",
+                //     description: (
+                //         <button
+                //             className="absolute right-0 top-0 mr-2 mt-2 hover:text-muted-foreground"
+                //             onClick={() => toast.dismiss()}
+                //         >
+                //             <X size={16} />
+                //         </button>
+                //     ),
+                // });
             } else {
                 toast.success("Sign Up successful!");
                 router.push("/dashboard");
