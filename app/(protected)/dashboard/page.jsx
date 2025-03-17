@@ -9,7 +9,7 @@ export default function DashboardPage() {
             <div>
                 <h1 className="text-3xl font-bold tracking-tight">Dashboard</h1>
                 <p className="text-muted-foreground">
-                    Track and manage your job applications in one place.
+                    Monitor your job search with real-time insights.
                 </p>
             </div>
             <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
