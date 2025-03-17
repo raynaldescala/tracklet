@@ -94,7 +94,7 @@ export default function ApplicationsPage() {
                         Applications
                     </h1>
                     <p className="text-muted-foreground">
-                        Track and manage your job applications in one place.
+                        A comprehensive overview of your job applications.
                     </p>
                 </div>
                 <Button className="w-fit">Add Application</Button>
