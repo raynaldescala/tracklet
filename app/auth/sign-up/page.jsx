@@ -3,7 +3,7 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useState, useTransition } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
@@ -42,7 +42,8 @@ const formSchema = z.object({
 
 export default function SignUpPage() {
     const router = useRouter();
-    const [isLoading, setIsLoading] = useState(false); // Add loading state
+    const [isLoading, setIsLoading] = useState(false);
+    const [isPending, startTransition] = useTransition();
     const form = useForm({
         resolver: zodResolver(formSchema),
         defaultValues: {
@@ -76,8 +77,9 @@ export default function SignUpPage() {
                 //     ),
                 // });
             } else {
-                toast.success("Sign Up successful!");
-                router.push("/dashboard");
+                startTransition(() => {
+                    router.push("/dashboard");
+                });
             }
         } catch (error) {
             toast.error("An unexpected error occurred");
@@ -114,7 +116,9 @@ export default function SignUpPage() {
                                             <Input
                                                 id="name"
                                                 placeholder="John Doe"
-                                                disabled={isLoading}
+                                                disabled={
+                                                    isLoading || isPending
+                                                }
                                                 {...field}
                                             />
                                         </FormControl>
@@ -138,7 +142,9 @@ export default function SignUpPage() {
                                                 placeholder="johndoe@mail.com"
                                                 type="email"
                                                 autoComplete="email"
-                                                disabled={isLoading}
+                                                disabled={
+                                                    isLoading || isLoading
+                                                }
                                                 {...field}
                                             />
                                         </FormControl>
@@ -161,7 +167,9 @@ export default function SignUpPage() {
                                                 id="password"
                                                 placeholder="******"
                                                 autoComplete="new-password"
-                                                disabled={isLoading}
+                                                disabled={
+                                                    isLoading || isPending
+                                                }
                                                 {...field}
                                             />
                                         </FormControl>
@@ -173,9 +181,9 @@ export default function SignUpPage() {
                             <Button
                                 type="submit"
                                 className="w-full"
-                                disabled={isLoading}
+                                disabled={isLoading || isPending}
                             >
-                                {isLoading ? (
+                                {isLoading || isPending ? (
                                     <Loader2 className="h-4 w-4 animate-spin text-muted-foreground" />
                                 ) : (
                                     "Sign Up"
@@ -191,7 +199,7 @@ export default function SignUpPage() {
                             <Button
                                 variant="outline"
                                 className="flex w-full items-center gap-3"
-                                disabled={isLoading}
+                                disabled={isLoading || isPending}
                             >
                                 <svg
                                     xmlns="http://www.w3.org/2000/svg"

@@ -3,7 +3,7 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useState, useTransition } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
@@ -40,6 +40,7 @@ const formSchema = z.object({
 export default function LoginPage() {
     const router = useRouter();
     const [isLoading, setIsLoading] = useState(false);
+    const [isPending, startTransition] = useTransition();
 
     const form = useForm({
         resolver: zodResolver(formSchema),
@@ -72,7 +73,9 @@ export default function LoginPage() {
                 //     ),
                 // });
             } else {
-                router.push("/dashboard");
+                startTransition(() => {
+                    router.push("/dashboard");
+                });
             }
         } catch (error) {
             toast.error("An unexpected error occurred");
@@ -110,7 +113,9 @@ export default function LoginPage() {
                                                 placeholder="johndoe@mail.com"
                                                 type="email"
                                                 autoComplete="email"
-                                                disabled={isLoading}
+                                                disabled={
+                                                    isLoading || isPending
+                                                }
                                                 {...field}
                                             />
                                         </FormControl>
@@ -139,7 +144,9 @@ export default function LoginPage() {
                                                 id="password"
                                                 placeholder="******"
                                                 autoComplete="current-password"
-                                                disabled={isLoading}
+                                                disabled={
+                                                    isLoading || isPending
+                                                }
                                                 {...field}
                                             />
                                         </FormControl>
@@ -150,9 +157,9 @@ export default function LoginPage() {
                             <Button
                                 type="submit"
                                 className="w-full"
-                                disabled={isLoading}
+                                disabled={isLoading || isPending}
                             >
-                                {isLoading ? (
+                                {isLoading || isPending ? (
                                     <Loader2 className="h-4 w-4 animate-spin text-muted-foreground" />
                                 ) : (
                                     "Login"
@@ -168,7 +175,7 @@ export default function LoginPage() {
                             <Button
                                 variant="outline"
                                 className="flex w-full items-center gap-3"
-                                disabled={isLoading}
+                                disabled={isLoading || isPending}
                             >
                                 <svg
                                     xmlns="http://www.w3.org/2000/svg"
