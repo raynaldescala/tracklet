@@ -1,6 +1,7 @@
 import StatusChart from "@/app/components/ui/app-status-chart";
 import ConversionFunnel from "@/app/components/ui/conversion-funnel-chart";
 import { Progress } from "@/app/components/ui/progress";
+import RecentApplications from "@/app/components/ui/recent-applications";
 import { CircleCheck, FileEdit, MessagesSquare, Users } from "lucide-react";
 
 export default function DashboardPage() {
@@ -78,6 +79,7 @@ export default function DashboardPage() {
                     <ConversionFunnel />
                 </div>
             </div>
+            <RecentApplications />
         </div>
     );
 }
