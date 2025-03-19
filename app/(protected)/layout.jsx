@@ -5,9 +5,11 @@ import {
     AvatarImage,
 } from "@/app/components/ui/avatar";
 import { Button } from "@/app/components/ui/button";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from "@/app/components/ui/dropdown-menu";
 import { SidebarProvider, SidebarTrigger } from "@/app/components/ui/sidebar";
 import ThemeSwitcher from "@/app/components/ui/theme-switcher";
-import { CircleFadingPlus } from "lucide-react";
+import { logout } from "@/lib/supabase/auth/actions";
+import { CircleFadingPlus, LogOut, Settings, User } from "lucide-react";
 
 export default function Layout({ children }) {
     return (
@@ -23,10 +25,31 @@ export default function Layout({ children }) {
                                     <CircleFadingPlus className="animate-pulse text-primary" />
                                 </Button>
                                 <ThemeSwitcher />
-                                <Avatar className="h-9 w-9">
-                                    <AvatarImage src="" alt="" />
-                                    <AvatarFallback>RE</AvatarFallback>
-                                </Avatar>
+                                <DropdownMenu>
+                                    <DropdownMenuTrigger asChild>
+                                        <Button variant="ghost" className="relative h-9 w-9 rounded-full">
+                                            <Avatar className="h-9 w-9">
+                                                <AvatarImage src="" alt="" />
+                                                <AvatarFallback>RE</AvatarFallback>
+                                            </Avatar>
+                                        </Button>
+                                    </DropdownMenuTrigger>
+                                    <DropdownMenuContent className="w-36" align="end">
+                                        <DropdownMenuItem>
+                                            <User className="mr-1 h-4 w-4" />
+                                            <span>Account</span>
+                                        </DropdownMenuItem>
+                                        <DropdownMenuItem>
+                                            <Settings className="mr-1 h-4 w-4" />
+                                            <span>Settings</span>
+                                        </DropdownMenuItem>
+                                        <DropdownMenuSeparator />
+                                        <DropdownMenuItem onClick={logout}>
+                                            <LogOut className="mr-1 h-4 w-4" />
+                                            <span>Log out</span>
+                                        </DropdownMenuItem>
+                                    </DropdownMenuContent>
+                                </DropdownMenu>
                             </div>
                         </header>
                     </div>
