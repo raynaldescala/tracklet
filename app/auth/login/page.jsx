@@ -97,7 +97,6 @@ export default function LoginPage() {
             }
         } catch (error) {
             toast.error("An unexpected error occurred");
-        } finally {
             setIsGoogleLoading(false);
         }
     };

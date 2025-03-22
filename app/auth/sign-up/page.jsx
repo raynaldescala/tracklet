@@ -101,7 +101,6 @@ export default function SignUpPage() {
             }
         } catch (error) {
             toast.error("An unexpected error occurred");
-        } finally {
             setIsGoogleLoading(false);
         }
     };
