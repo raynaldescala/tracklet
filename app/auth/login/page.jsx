@@ -92,6 +92,7 @@ export default function LoginPage() {
             const result = await continueWithGoogle();
             if (result.error) {
                 toast.error("Google authentication failed: " + result.error);
+                setIsGoogleLoading(false);
             } else if (result.url) {
                 window.location.href = result.url
             }
