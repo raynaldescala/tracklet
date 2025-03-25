@@ -98,13 +98,13 @@ export default function SignUpPage() {
                 toast.error("Google authentication failed: " + result.error);
                 setIsGoogleLoading(false);
             } else if (result.url) {
-                window.location.href = result.url
+                window.location.href = result.url;
             }
         } catch (error) {
             toast.error("An unexpected error occurred");
             setIsGoogleLoading(false);
         }
-    };
+    }
 
     return (
         <Card className="mx-auto max-w-sm">
@@ -121,7 +121,6 @@ export default function SignUpPage() {
                         className="space-y-8"
                     >
                         <div className="grid gap-4">
-                            {/* Name Field */}
                             <FormField
                                 control={form.control}
                                 name="name"
@@ -135,7 +134,9 @@ export default function SignUpPage() {
                                                 id="name"
                                                 placeholder="John Doe"
                                                 disabled={
-                                                    isLoading || isPending || isGoogleLoading
+                                                    isLoading ||
+                                                    isPending ||
+                                                    isGoogleLoading
                                                 }
                                                 {...field}
                                             />
@@ -145,7 +146,6 @@ export default function SignUpPage() {
                                 )}
                             />
 
-                            {/* Email Field */}
                             <FormField
                                 control={form.control}
                                 name="email"
@@ -161,7 +161,9 @@ export default function SignUpPage() {
                                                 type="email"
                                                 autoComplete="email"
                                                 disabled={
-                                                    isLoading || isPending || isGoogleLoading
+                                                    isLoading ||
+                                                    isPending ||
+                                                    isGoogleLoading
                                                 }
                                                 {...field}
                                             />
@@ -171,7 +173,6 @@ export default function SignUpPage() {
                                 )}
                             />
 
-                            {/* Password Field */}
                             <FormField
                                 control={form.control}
                                 name="password"
@@ -186,7 +187,9 @@ export default function SignUpPage() {
                                                 placeholder="******"
                                                 autoComplete="new-password"
                                                 disabled={
-                                                    isLoading || isPending || isGoogleLoading
+                                                    isLoading ||
+                                                    isPending ||
+                                                    isGoogleLoading
                                                 }
                                                 {...field}
                                             />
@@ -199,7 +202,9 @@ export default function SignUpPage() {
                             <Button
                                 type="submit"
                                 className="w-full"
-                                disabled={isLoading || isPending || isGoogleLoading}
+                                disabled={
+                                    isLoading || isPending || isGoogleLoading
+                                }
                             >
                                 {isLoading || isPending ? (
                                     <Loader2 className="h-4 w-4 animate-spin text-muted-foreground" />
@@ -219,7 +224,9 @@ export default function SignUpPage() {
                                 variant="outline"
                                 onClick={handleGoogleAuth}
                                 className="flex w-full items-center gap-3"
-                                disabled={isLoading || isPending || isGoogleLoading}
+                                disabled={
+                                    isLoading || isPending || isGoogleLoading
+                                }
                             >
                                 {isGoogleLoading ? (
                                     <Loader2 className="h-4 w-4 animate-spin text-muted-foreground" />
@@ -236,7 +243,10 @@ export default function SignUpPage() {
                                             <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"></path>
                                             <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"></path>
                                             <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"></path>
-                                            <path d="M1 1h22v22H1z" fill="none"></path>
+                                            <path
+                                                d="M1 1h22v22H1z"
+                                                fill="none"
+                                            ></path>
                                         </svg>
                                         Continue with Google
                                     </>

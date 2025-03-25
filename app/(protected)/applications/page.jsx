@@ -69,7 +69,6 @@ const applications = [
     },
 ];
 
-// Function to get status badge styling
 const getStatusBadge = (status) => {
     switch (status) {
         case "Applied":
