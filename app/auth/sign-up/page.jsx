@@ -207,7 +207,7 @@ export default function SignUpPage() {
                                 }
                             >
                                 {isLoading || isPending ? (
-                                    <Loader2 className="h-4 w-4 animate-spin text-muted-foreground" />
+                                    <Loader2 className="h-4 w-4 animate-spin text-primary-foreground/80 dark:text-muted-foreground" />
                                 ) : (
                                     "Sign Up"
                                 )}
