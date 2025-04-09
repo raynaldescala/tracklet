@@ -19,6 +19,7 @@ import {
 import { SidebarProvider, SidebarTrigger } from "@/app/components/ui/sidebar";
 import { Skeleton } from "@/app/components/ui/skeleton";
 import ThemeSwitcher from "@/app/components/ui/theme-switcher";
+import { fetchProfile } from "@/lib/supabase/applications/actions";
 import { logout } from "@/lib/supabase/auth/actions";
 import { createClient } from "@/lib/supabase/client";
 import { CircleFadingPlus, LogOut, Settings, User } from "lucide-react";
@@ -28,24 +29,18 @@ export default function Layout({ children }) {
     const [profile, setProfile] = useState(null);
 
     useEffect(() => {
-        async function fetchProfile() {
-            const supabase = createClient();
-            const {
-                data: { user },
-            } = await supabase.auth.getUser();
+        async function getProfile() {
+            try {
+                const data = await fetchProfile();
 
-            if (user) {
-                const { data } = await supabase
-                    .from("profiles")
-                    .select("name, email, avatar_url")
-                    .eq("id", user.id)
-                    .single();
-
-                if (data) setProfile(data);
+                setProfile(data);
+            }
+            catch (error) {
+                toast.error("Error fetching profile")
             }
         }
 
-        fetchProfile();
+        getProfile();
     }, []);
 
     const getFirstLetter = () => {
