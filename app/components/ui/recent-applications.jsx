@@ -25,48 +25,13 @@ import {
     TableHeader,
     TableRow,
 } from "@/app/components/ui/table";
+import { useApplications } from "@/app/contexts/applications-context";
+import { format } from "date-fns";
 import { Eye, MoreHorizontal, Pencil, Trash2 } from "lucide-react";
 import Link from "next/link";
+import { useEffect } from "react";
+import { Skeleton } from "./skeleton";
 
-const applications = [
-    {
-        company: "Acme Inc",
-        position: "Frontend Developer",
-        dateApplied: "Mar 15, 2023",
-        status: "Interviewing",
-        followUp: "Mar 25, 2023",
-    },
-    {
-        company: "TechCorp",
-        position: "Full Stack Engineer",
-        dateApplied: "Mar 10, 2023",
-        status: "Applied",
-        followUp: "Mar 24, 2023",
-    },
-    {
-        company: "Innovate Solutions",
-        position: "React Developer",
-        dateApplied: "Mar 5, 2023",
-        status: "Rejected",
-        followUp: "—",
-    },
-    {
-        company: "Global Systems",
-        position: "Senior Frontend Engineer",
-        dateApplied: "Mar 1, 2023",
-        status: "Offered",
-        followUp: "—",
-    },
-    {
-        company: "DevWorks",
-        position: "UI/UX Developer",
-        dateApplied: "Feb 28, 2023",
-        status: "Interviewing",
-        followUp: "Mar 22, 2023",
-    },
-];
-
-// Function to get status badge styling
 const getStatusBadge = (status) => {
     switch (status) {
         case "Applied":
@@ -83,6 +48,12 @@ const getStatusBadge = (status) => {
 };
 
 export default function RecentApplications() {
+    const { applications, isLoading, skeletonCount, getApplications } = useApplications();
+
+    useEffect(() => {
+        getApplications();
+    }, []);
+
     return (
         <Card className="flex h-full flex-col p-6">
             <CardHeader className="flex flex-col justify-between gap-3 space-y-0 p-0 pb-4 sm:flex-row sm:items-center sm:gap-6">
@@ -125,59 +96,103 @@ export default function RecentApplications() {
                                 </TableRow>
                             </TableHeader>
                             <TableBody>
-                                {applications.map((app, index) => (
-                                    <TableRow key={index} className="text-left">
-                                        <TableCell className="whitespace-nowrap p-4 font-medium">
-                                            {app.company}
-                                        </TableCell>
-                                        <TableCell className="whitespace-nowrap p-4">
-                                            {app.position}
-                                        </TableCell>
-                                        <TableCell className="whitespace-nowrap p-4">
-                                            {app.dateApplied}
-                                        </TableCell>
-                                        <TableCell className="whitespace-nowrap p-4">
-                                            <Badge
-                                                className={`font-semibold ${getStatusBadge(app.status)}`}
-                                            >
-                                                <span className="text-slate-100">
-                                                    {app.status}
-                                                </span>
-                                            </Badge>
-                                        </TableCell>
-                                        <TableCell className="whitespace-nowrap p-4">
-                                            {app.followUp}
-                                        </TableCell>
-                                        <TableCell className="whitespace-nowrap p-4 text-right">
-                                            <DropdownMenu>
-                                                <DropdownMenuTrigger asChild>
-                                                    <Button
-                                                        variant="ghost"
-                                                        size="icon"
-                                                        className="h-8 w-8"
-                                                    >
-                                                        <MoreHorizontal className="h-4 w-4" />
-                                                    </Button>
-                                                </DropdownMenuTrigger>
-                                                <DropdownMenuContent align="end">
-                                                    <DropdownMenuItem>
-                                                        <Eye className="mr-1 h-4 w-4" />{" "}
-                                                        View Details
-                                                    </DropdownMenuItem>
-                                                    <DropdownMenuItem>
-                                                        <Pencil className="mr-1 h-4 w-4" />{" "}
-                                                        Edit Application
-                                                    </DropdownMenuItem>
-                                                    <DropdownMenuSeparator />
-                                                    <DropdownMenuItem>
-                                                        <Trash2 className="mr-1 h-4 w-4" />{" "}
-                                                        Delete Application
-                                                    </DropdownMenuItem>
-                                                </DropdownMenuContent>
-                                            </DropdownMenu>
+                                {isLoading ? (
+                                    [...Array(skeletonCount)].map((_, index) => (
+                                        <TableRow key={`skeleton-${index}`}>
+                                            <TableCell className="whitespace-nowrap p-4">
+                                                <Skeleton className="h-5 w-32" />
+                                            </TableCell>
+                                            <TableCell className="whitespace-nowrap p-4">
+                                                <Skeleton className="h-5 w-40" />
+                                            </TableCell>
+                                            <TableCell className="whitespace-nowrap p-4">
+                                                <Skeleton className="h-5 w-24" />
+                                            </TableCell>
+                                            <TableCell className="whitespace-nowrap p-4">
+                                                <Skeleton className="h-5 w-20" />
+                                            </TableCell>
+                                            <TableCell className="whitespace-nowrap p-4">
+                                                <Skeleton className="h-5 w-24" />
+                                            </TableCell>
+                                            <TableCell className="whitespace-nowrap p-4 text-right">
+                                                <Button
+                                                    variant="ghost"
+                                                    size="icon"
+                                                    className="h-8 w-8"
+                                                    disabled
+                                                >
+                                                    <MoreHorizontal className="h-4 w-4" />
+                                                </Button>
+                                            </TableCell>
+                                        </TableRow>
+                                    ))
+                                ) : applications.length === 0 ? (
+                                    <TableRow>
+                                        <TableCell
+                                            colSpan={6}
+                                            className="whitespace-nowrap p-4 md:text-center text-sm text-muted-foreground"
+                                        >
+                                            No applications found.
                                         </TableCell>
                                     </TableRow>
-                                ))}
+                                ) : (
+                                    applications?.map((app, index) => (
+                                        <TableRow key={index} className="text-left">
+                                            <TableCell className="whitespace-nowrap p-4 font-medium">
+                                                {app.company}
+                                            </TableCell>
+                                            <TableCell className="whitespace-nowrap p-4">
+                                                {app.position}
+                                            </TableCell>
+                                            <TableCell className="whitespace-nowrap p-4">
+                                                {format(
+                                                    app.date_applied,
+                                                    "MMM d, yyyy",
+                                                )}
+                                            </TableCell>
+                                            <TableCell className="whitespace-nowrap p-4">
+                                                <Badge
+                                                    className={`font-semibold ${getStatusBadge(app.status)}`}
+                                                >
+                                                    <span className="text-slate-100">
+                                                        {app.status}
+                                                    </span>
+                                                </Badge>
+                                            </TableCell>
+                                            <TableCell className="whitespace-nowrap p-4">
+                                                {app.follow_up || "—"}
+                                            </TableCell>
+                                            <TableCell className="whitespace-nowrap p-4 text-right">
+                                                <DropdownMenu>
+                                                    <DropdownMenuTrigger asChild>
+                                                        <Button
+                                                            variant="ghost"
+                                                            size="icon"
+                                                            className="h-8 w-8"
+                                                        >
+                                                            <MoreHorizontal className="h-4 w-4" />
+                                                        </Button>
+                                                    </DropdownMenuTrigger>
+                                                    <DropdownMenuContent align="end">
+                                                        <DropdownMenuItem>
+                                                            <Eye className="mr-1 h-4 w-4" />{" "}
+                                                            View Details
+                                                        </DropdownMenuItem>
+                                                        <DropdownMenuItem>
+                                                            <Pencil className="mr-1 h-4 w-4" />{" "}
+                                                            Edit Application
+                                                        </DropdownMenuItem>
+                                                        <DropdownMenuSeparator />
+                                                        <DropdownMenuItem>
+                                                            <Trash2 className="mr-1 h-4 w-4" />{" "}
+                                                            Delete Application
+                                                        </DropdownMenuItem>
+                                                    </DropdownMenuContent>
+                                                </DropdownMenu>
+                                            </TableCell>
+                                        </TableRow>
+                                    ))
+                                )}
                             </TableBody>
                         </Table>
                     </div>
