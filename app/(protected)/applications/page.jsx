@@ -3,6 +3,7 @@
 import ApplicationForm from "@/app/components/ui/application-form";
 import { Badge } from "@/app/components/ui/badge";
 import { Button } from "@/app/components/ui/button";
+import { Card } from "@/app/components/ui/card";
 import {
     DropdownMenu,
     DropdownMenuContent,
@@ -10,6 +11,14 @@ import {
     DropdownMenuSeparator,
     DropdownMenuTrigger,
 } from "@/app/components/ui/dropdown-menu";
+import { Input } from "@/app/components/ui/input";
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from "@/app/components/ui/select";
 import { Skeleton } from "@/app/components/ui/skeleton";
 import {
     Table,
@@ -21,8 +30,8 @@ import {
 } from "@/app/components/ui/table";
 import { useApplications } from "@/app/contexts/applications-context";
 import { format } from "date-fns";
-import { Eye, MoreHorizontal, Pencil, Trash2 } from "lucide-react";
-import { useEffect } from "react";
+import { Eye, MoreHorizontal, Pencil, Search, Trash2 } from "lucide-react";
+import { useEffect, useState } from "react";
 
 const getStatusBadge = (status) => {
     switch (status) {
@@ -40,7 +49,9 @@ const getStatusBadge = (status) => {
 };
 
 export default function ApplicationsPage() {
-    const { applications, isLoading, skeletonCount, getApplications } = useApplications();
+    const [searchQuery, setSearchQuery] = useState("");
+    const { applications, isLoading, skeletonCount, getApplications } =
+        useApplications();
 
     useEffect(() => {
         getApplications();
@@ -61,6 +72,37 @@ export default function ApplicationsPage() {
                     <Button className="w-fit">Add Application</Button>
                 </ApplicationForm>
             </div>
+
+            <Card className="p-4">
+                <div className="flex flex-col items-stretch gap-4 sm:flex-row">
+                    <div className="relative h-10 w-full">
+                        <Search className="absolute left-2.5 top-1/2 size-4 -translate-y-1/2" />
+                        <Input
+                            placeholder="Search by company or position..."
+                            type="search"
+                            value={searchQuery}
+                            onChange={(e) => {
+                                setSearchQuery(e.target.value);
+                            }}
+                            className="pl-8"
+                        />
+                    </div>
+                    <Select>
+                        <SelectTrigger className="h-10 w-[180px]">
+                            <SelectValue placeholder="Filter by status" />
+                        </SelectTrigger>
+                        <SelectContent>
+                            <SelectItem value="all">All Statuses</SelectItem>
+                            <SelectItem value="applied">Applied</SelectItem>
+                            <SelectItem value="interviewing">
+                                Interviewing
+                            </SelectItem>
+                            <SelectItem value="offer">Offer</SelectItem>
+                            <SelectItem value="rejected">Rejected</SelectItem>
+                        </SelectContent>
+                    </Select>
+                </div>
+            </Card>
 
             <div className="overflow-x-auto rounded-lg border shadow-sm">
                 <Table className="w-full min-w-[800px]">
@@ -121,7 +163,7 @@ export default function ApplicationsPage() {
                             <TableRow>
                                 <TableCell
                                     colSpan={6}
-                                    className="whitespace-nowrap p-4 md:text-center text-sm text-muted-foreground"
+                                    className="whitespace-nowrap p-4 text-sm text-muted-foreground md:text-center"
                                 >
                                     No applications found.
                                 </TableCell>
