@@ -62,7 +62,7 @@ export default function RecentApplications() {
                         Recent Applications
                     </CardTitle>
                     <CardDescription className="space-y-0">
-                        Your most recent job applications
+                        Your most recently added job applications
                     </CardDescription>
                 </div>
                 <Button asChild className="w-fit">
