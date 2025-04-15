@@ -57,6 +57,14 @@ export default function ApplicationsPage() {
         getApplications();
     }, []);
 
+    const filteredApplications = applications?.filter((app) => {
+        const query = searchQuery.toLowerCase();
+        return (
+            app.company.toLowerCase().includes(query) ||
+            app.position.toLowerCase().includes(query)
+        );
+    });
+
     return (
         <div className="grid gap-6 duration-500 animate-in fade-in">
             <div className="flex flex-col justify-between gap-3 sm:flex-row sm:items-center sm:gap-6">
@@ -159,7 +167,7 @@ export default function ApplicationsPage() {
                                     </TableCell>
                                 </TableRow>
                             ))
-                        ) : applications.length === 0 ? (
+                        ) : filteredApplications.length === 0 ? (
                             <TableRow>
                                 <TableCell
                                     colSpan={6}
@@ -169,7 +177,7 @@ export default function ApplicationsPage() {
                                 </TableCell>
                             </TableRow>
                         ) : (
-                            applications?.map((app, index) => (
+                            filteredApplications?.map((app, index) => (
                                 <TableRow key={index} className="text-left">
                                     <TableCell className="whitespace-nowrap p-4 font-medium">
                                         {app.company}
