@@ -83,7 +83,7 @@ export default function ApplicationsPage() {
 
             <Card className="p-4">
                 <div className="flex flex-col items-stretch gap-4 sm:flex-row">
-                    <div className="relative h-10 w-full">
+                    <div className="relative w-full">
                         <Search className="absolute left-2.5 top-1/2 size-4 -translate-y-1/2" />
                         <Input
                             placeholder="Search by company or position..."
@@ -92,7 +92,7 @@ export default function ApplicationsPage() {
                             onChange={(e) => {
                                 setSearchQuery(e.target.value);
                             }}
-                            className="pl-8"
+                            className="h-10 pl-8"
                         />
                     </div>
                     <Select>
