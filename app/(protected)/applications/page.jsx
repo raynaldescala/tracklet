@@ -50,6 +50,7 @@ const getStatusBadge = (status) => {
 
 export default function ApplicationsPage() {
     const [searchQuery, setSearchQuery] = useState("");
+    const [statusFilter, setStatusFilter] = useState("all");
     const { applications, isLoading, skeletonCount, getApplications } =
         useApplications();
 
@@ -59,10 +60,13 @@ export default function ApplicationsPage() {
 
     const filteredApplications = applications?.filter((app) => {
         const query = searchQuery.toLowerCase();
-        return (
+        const matchesSearch =
             app.company.toLowerCase().includes(query) ||
-            app.position.toLowerCase().includes(query)
-        );
+            app.position.toLowerCase().includes(query);
+        const matchesStatus =
+            statusFilter === "all" || app.status.toLowerCase() === statusFilter;
+
+        return matchesSearch && matchesStatus;
     });
 
     return (
@@ -92,12 +96,17 @@ export default function ApplicationsPage() {
                             onChange={(e) => {
                                 setSearchQuery(e.target.value);
                             }}
+                            disabled={isLoading}
                             className="h-10 pl-8"
                         />
                     </div>
-                    <Select>
+                    <Select
+                        value={statusFilter}
+                        onValueChange={setStatusFilter}
+                        disabled={isLoading}
+                    >
                         <SelectTrigger className="h-10 w-[180px]">
-                            <SelectValue placeholder="Filter by status" />
+                            <SelectValue />
                         </SelectTrigger>
                         <SelectContent>
                             <SelectItem value="all">All Statuses</SelectItem>
