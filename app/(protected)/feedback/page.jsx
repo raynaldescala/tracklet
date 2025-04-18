@@ -28,6 +28,9 @@ import {
     SelectValue,
 } from "@/app/components/ui/select";
 import { Textarea } from "@/app/components/ui/textarea";
+import { Loader2 } from "lucide-react";
+import { useState } from "react";
+import { toast } from "sonner";
 
 const formSchema = z.object({
     type: z.enum(["feature", "bug", "question", "other"], {
@@ -40,6 +43,8 @@ const formSchema = z.object({
 });
 
 export default function FeedbackPage() {
+    const [isLoading, setIsLoading] = useState(false);
+
     const form = useForm({
         resolver: zodResolver(formSchema),
         defaultValues: {
@@ -48,7 +53,30 @@ export default function FeedbackPage() {
         },
     });
 
-    async function onSubmit() {}
+    async function onSubmit(values) {
+        setIsLoading(true);
+
+        try {
+            const response = await fetch("/api/feedback", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(values),
+            });
+
+            if (!response.ok) {
+                throw new Error("Failed to send feedback");
+            }
+
+            toast.success("Feedback sent successfully!");
+            form.reset({ type: undefined, feedback: "" });
+        } catch (error) {
+            toast.error("Something went wrong");
+        } finally {
+            setIsLoading(false);
+        }
+    }
 
     return (
         <div className="grid gap-6 duration-500 animate-in fade-in">
@@ -81,7 +109,8 @@ export default function FeedbackPage() {
                                             <FormLabel>Feedback Type</FormLabel>
                                             <Select
                                                 onValueChange={field.onChange}
-                                                defaultValue={field.value}
+                                                value={field.value || ""}
+                                                disabled={isLoading}
                                             >
                                                 <FormControl>
                                                     <SelectTrigger>
@@ -118,6 +147,7 @@ export default function FeedbackPage() {
                                                     placeholder="Tell us what you think..."
                                                     rows="6"
                                                     className="resize-none"
+                                                    disabled={isLoading}
                                                     {...field}
                                                 />
                                             </FormControl>
@@ -125,8 +155,16 @@ export default function FeedbackPage() {
                                         </FormItem>
                                     )}
                                 />
-                                <Button type="submit" className="w-full">
-                                    Send Feedback
+                                <Button
+                                    type="submit"
+                                    className="w-full"
+                                    disabled={isLoading}
+                                >
+                                    {isLoading ? (
+                                        <Loader2 className="h-4 w-4 animate-spin text-primary-foreground/80 dark:text-muted-foreground" />
+                                    ) : (
+                                        "Send Feedback"
+                                    )}
                                 </Button>
                             </div>
                         </form>
