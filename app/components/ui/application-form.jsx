@@ -29,13 +29,6 @@ import {
     PopoverContent,
     PopoverTrigger,
 } from "@/app/components/ui/popover";
-import {
-    Select,
-    SelectContent,
-    SelectItem,
-    SelectTrigger,
-    SelectValue,
-} from "@/app/components/ui/select";
 import { Textarea } from "@/app/components/ui/textarea";
 import { useApplications } from "@/app/contexts/applications-context";
 import { addApplication } from "@/lib/supabase/applications/actions";
@@ -47,17 +40,20 @@ import { toast } from "sonner";
 const formSchema = z.object({
     company: z.string().min(1, "Company name is required"),
     position: z.string().min(1, "Position is required"),
-    status: z.enum(["Applied", "Interviewing", "Rejected", "Offered"]),
     dateApplied: z.date({
         required_error: "Date applied is required",
         invalid_type_error: "Date applied is required",
     }),
+    applicationLink: z.string().url().optional().or(z.literal("")),
+    location: z.string().optional(),
+    source: z.string().optional(),
     notes: z.string().optional(),
 });
 
 export default function ApplicationForm({ children }) {
     const [isLoading, setIsLoading] = useState(false);
     const [open, setOpen] = useState(false);
+    const [calendarOpen, setCalendarOpen] = useState(false);
     const { getApplications } = useApplications();
 
     const form = useForm({
@@ -65,8 +61,10 @@ export default function ApplicationForm({ children }) {
         defaultValues: {
             company: "",
             position: "",
-            status: "Applied",
             dateApplied: "",
+            applicationLink: "",
+            location: "",
+            source: "",
             notes: "",
         },
     });
@@ -76,10 +74,13 @@ export default function ApplicationForm({ children }) {
 
         try {
             const result = await addApplication({
-                status: values.status,
+                status: "Applied",
                 company: values.company,
                 position: values.position,
                 date_applied: values.dateApplied,
+                application_link: values.applicationLink || null,
+                location: values.location || null,
+                source: values.source || null,
                 notes: values.notes || null,
             });
 
@@ -120,148 +121,217 @@ export default function ApplicationForm({ children }) {
                 <Form {...form}>
                     <form
                         onSubmit={form.handleSubmit(onSubmit)}
-                        className="space-y-4"
+                        className="space-y-6"
                     >
-                        <FormField
-                            control={form.control}
-                            name="company"
-                            render={({ field }) => (
-                                <FormItem>
-                                    <FormLabel>Company</FormLabel>
-                                    <FormControl>
-                                        <Input
-                                            placeholder="Company name"
-                                            disabled={isLoading}
-                                            {...field}
-                                        />
-                                    </FormControl>
-                                    <FormMessage />
-                                </FormItem>
-                            )}
-                        />
-                        <FormField
-                            control={form.control}
-                            name="position"
-                            render={({ field }) => (
-                                <FormItem>
-                                    <FormLabel>Position</FormLabel>
-                                    <FormControl>
-                                        <Input
-                                            placeholder="Job title"
-                                            disabled={isLoading}
-                                            {...field}
-                                        />
-                                    </FormControl>
-                                    <FormMessage />
-                                </FormItem>
-                            )}
-                        />
-                        <FormField
-                            control={form.control}
-                            name="status"
-                            render={({ field }) => (
-                                <FormItem>
-                                    <FormLabel>Status</FormLabel>
-                                    <Select
-                                        onValueChange={field.onChange}
-                                        defaultValue={field.value}
-                                        disabled={isLoading}
-                                    >
-                                        <FormControl>
-                                            <SelectTrigger>
-                                                <SelectValue placeholder="Select status" />
-                                            </SelectTrigger>
-                                        </FormControl>
-                                        <SelectContent>
-                                            <SelectItem value="Applied">
-                                                Applied
-                                            </SelectItem>
-                                            <SelectItem value="Interviewing">
-                                                Interviewing
-                                            </SelectItem>
-                                            <SelectItem value="Rejected">
-                                                Rejected
-                                            </SelectItem>
-                                            <SelectItem value="Offered">
-                                                Offered
-                                            </SelectItem>
-                                        </SelectContent>
-                                    </Select>
-                                    <FormMessage />
-                                </FormItem>
-                            )}
-                        />
-                        <FormField
-                            control={form.control}
-                            name="dateApplied"
-                            render={({ field }) => (
-                                <FormItem>
-                                    <FormLabel>Date Applied</FormLabel>
-                                    <Popover modal>
-                                        <PopoverTrigger asChild>
+                        <div className="space-y-2">
+                            <div className="flex items-center gap-2">
+                                <div className="h-4 w-1 rounded-full bg-primary" />
+                                <h3 className="text-sm font-semibold">
+                                    Basic Information
+                                </h3>
+                            </div>
+                            <div className="space-y-4">
+                                <FormField
+                                    control={form.control}
+                                    name="company"
+                                    render={({ field }) => (
+                                        <FormItem>
+                                            <FormLabel>
+                                                Company{" "}
+                                                <span className="text-destructive">
+                                                    *
+                                                </span>
+                                            </FormLabel>
                                             <FormControl>
-                                                <Button
-                                                    variant="outline"
-                                                    className={cn(
-                                                        "align-center flex w-full justify-between pl-3 font-normal",
-                                                        !field.value &&
-                                                        "text-muted-foreground",
-                                                    )}
+                                                <Input
+                                                    placeholder="Google"
                                                     disabled={isLoading}
-                                                >
-                                                    {field.value ? (
-                                                        format(
-                                                            field.value,
-                                                            "MMMM d, yyyy",
-                                                        )
-                                                    ) : (
-                                                        <span>Pick a date</span>
-                                                    )}
-                                                    <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
-                                                </Button>
+                                                    {...field}
+                                                />
                                             </FormControl>
-                                        </PopoverTrigger>
-                                        <PopoverContent
-                                            className="w-auto p-0"
-                                            side="top"
-                                            align="start"
-                                        >
-                                            <Calendar
-                                                mode="single"
-                                                selected={field.value}
-                                                onSelect={field.onChange}
-                                                disabled={(date) =>
-                                                    date > new Date() ||
-                                                    date <
-                                                    new Date("1900-01-01")
-                                                }
-                                                initialFocus
-                                            />
-                                        </PopoverContent>
-                                    </Popover>
-                                    <FormMessage />
-                                </FormItem>
-                            )}
-                        />
-                        <FormField
-                            control={form.control}
-                            name="notes"
-                            render={({ field }) => (
-                                <FormItem>
-                                    <FormLabel>Notes</FormLabel>
-                                    <FormControl>
-                                        <Textarea
-                                            placeholder="Additional notes"
-                                            rows="4"
-                                            className="resize-none"
-                                            disabled={isLoading}
-                                            {...field}
-                                        />
-                                    </FormControl>
-                                    <FormMessage />
-                                </FormItem>
-                            )}
-                        />
+                                            <FormMessage />
+                                        </FormItem>
+                                    )}
+                                />
+                                <FormField
+                                    control={form.control}
+                                    name="position"
+                                    render={({ field }) => (
+                                        <FormItem>
+                                            <FormLabel>
+                                                Position{" "}
+                                                <span className="text-destructive">
+                                                    *
+                                                </span>
+                                            </FormLabel>
+                                            <FormControl>
+                                                <Input
+                                                    placeholder="Software Engineer"
+                                                    disabled={isLoading}
+                                                    {...field}
+                                                />
+                                            </FormControl>
+                                            <FormMessage />
+                                        </FormItem>
+                                    )}
+                                />
+                                <FormField
+                                    control={form.control}
+                                    name="dateApplied"
+                                    render={({ field }) => (
+                                        <FormItem>
+                                            <FormLabel>
+                                                Date Applied{" "}
+                                                <span className="text-destructive">
+                                                    *
+                                                </span>
+                                            </FormLabel>
+                                            <Popover
+                                                modal
+                                                open={calendarOpen}
+                                                onOpenChange={setCalendarOpen}
+                                            >
+                                                <PopoverTrigger asChild>
+                                                    <FormControl>
+                                                        <Button
+                                                            variant="outline"
+                                                            className={cn(
+                                                                "align-center flex w-full justify-between pl-3 font-normal",
+                                                                !field.value &&
+                                                                    "text-muted-foreground",
+                                                            )}
+                                                            disabled={isLoading}
+                                                        >
+                                                            {field.value ? (
+                                                                format(
+                                                                    field.value,
+                                                                    "MMMM d, yyyy",
+                                                                )
+                                                            ) : (
+                                                                <span>
+                                                                    Select date
+                                                                </span>
+                                                            )}
+                                                            <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+                                                        </Button>
+                                                    </FormControl>
+                                                </PopoverTrigger>
+                                                <PopoverContent
+                                                    className="w-auto p-0"
+                                                    side="top"
+                                                    align="start"
+                                                >
+                                                    <Calendar
+                                                        mode="single"
+                                                        selected={field.value}
+                                                        onSelect={(date) => {
+                                                            field.onChange(
+                                                                date,
+                                                            );
+                                                            setCalendarOpen(
+                                                                false,
+                                                            );
+                                                        }}
+                                                        disabled={(date) =>
+                                                            date > new Date() ||
+                                                            date <
+                                                                new Date(
+                                                                    "1900-01-01",
+                                                                )
+                                                        }
+                                                        initialFocus
+                                                    />
+                                                </PopoverContent>
+                                            </Popover>
+                                            <FormMessage />
+                                        </FormItem>
+                                    )}
+                                />
+                            </div>
+                        </div>
+                        <div className="space-y-2">
+                            <div className="flex items-center gap-2">
+                                <div className="h-4 w-1 rounded-full bg-primary" />
+                                <h3 className="text-sm font-semibold">
+                                    Additional Details
+                                </h3>
+                            </div>
+                            <div className="space-y-4">
+                                <FormField
+                                    control={form.control}
+                                    name="applicationLink"
+                                    render={({ field }) => (
+                                        <FormItem>
+                                            <FormLabel>
+                                                Application Link
+                                            </FormLabel>
+                                            <FormControl>
+                                                <Input
+                                                    type="url"
+                                                    placeholder="https://site.com/..."
+                                                    disabled={isLoading}
+                                                    {...field}
+                                                />
+                                            </FormControl>
+                                            <FormMessage />
+                                        </FormItem>
+                                    )}
+                                />
+                                <FormField
+                                    control={form.control}
+                                    name="location"
+                                    render={({ field }) => (
+                                        <FormItem>
+                                            <FormLabel>Location</FormLabel>
+                                            <FormControl>
+                                                <Input
+                                                    placeholder="Makati, Remote, Hybrid - BGC"
+                                                    disabled={isLoading}
+                                                    {...field}
+                                                />
+                                            </FormControl>
+                                            <FormMessage />
+                                        </FormItem>
+                                    )}
+                                />
+                                <FormField
+                                    control={form.control}
+                                    name="source"
+                                    render={({ field }) => (
+                                        <FormItem>
+                                            <FormLabel>Source</FormLabel>
+                                            <FormControl>
+                                                <Input
+                                                    placeholder="LinkedIn, Referral, Company Site"
+                                                    disabled={isLoading}
+                                                    {...field}
+                                                />
+                                            </FormControl>
+                                            <FormMessage />
+                                        </FormItem>
+                                    )}
+                                />
+                                <FormField
+                                    control={form.control}
+                                    name="notes"
+                                    render={({ field }) => (
+                                        <FormItem>
+                                            <FormLabel>Notes</FormLabel>
+                                            <FormControl>
+                                                <Textarea
+                                                    placeholder="Add any additional details"
+                                                    rows="4"
+                                                    className="resize-none"
+                                                    disabled={isLoading}
+                                                    {...field}
+                                                />
+                                            </FormControl>
+                                            <FormMessage />
+                                        </FormItem>
+                                    )}
+                                />
+                            </div>
+                        </div>
                         <div className="flex justify-end gap-4 pt-4">
                             <Button
                                 type="submit"
