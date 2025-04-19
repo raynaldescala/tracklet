@@ -48,7 +48,8 @@ const getStatusBadge = (status) => {
 };
 
 export default function RecentApplications() {
-    const { applications, isLoading, skeletonCount, getApplications } = useApplications();
+    const { applications, isLoading, skeletonCount, getApplications } =
+        useApplications();
 
     useEffect(() => {
         getApplications();
@@ -87,9 +88,6 @@ export default function RecentApplications() {
                                     <TableHead className="w-32 whitespace-nowrap px-4 py-3">
                                         Status
                                     </TableHead>
-                                    <TableHead className="w-36 whitespace-nowrap px-4 py-3">
-                                        Follow-up
-                                    </TableHead>
                                     <TableHead className="w-20 whitespace-nowrap px-4 py-3 text-right">
                                         Actions
                                     </TableHead>
@@ -97,47 +95,49 @@ export default function RecentApplications() {
                             </TableHeader>
                             <TableBody>
                                 {isLoading ? (
-                                    [...Array(skeletonCount)].map((_, index) => (
-                                        <TableRow key={`skeleton-${index}`}>
-                                            <TableCell className="whitespace-nowrap p-4">
-                                                <Skeleton className="h-5 w-32" />
-                                            </TableCell>
-                                            <TableCell className="whitespace-nowrap p-4">
-                                                <Skeleton className="h-5 w-40" />
-                                            </TableCell>
-                                            <TableCell className="whitespace-nowrap p-4">
-                                                <Skeleton className="h-5 w-24" />
-                                            </TableCell>
-                                            <TableCell className="whitespace-nowrap p-4">
-                                                <Skeleton className="h-5 w-20" />
-                                            </TableCell>
-                                            <TableCell className="whitespace-nowrap p-4">
-                                                <Skeleton className="h-5 w-24" />
-                                            </TableCell>
-                                            <TableCell className="whitespace-nowrap p-4 text-right">
-                                                <Button
-                                                    variant="ghost"
-                                                    size="icon"
-                                                    className="h-8 w-8"
-                                                    disabled
-                                                >
-                                                    <MoreHorizontal className="h-4 w-4" />
-                                                </Button>
-                                            </TableCell>
-                                        </TableRow>
-                                    ))
+                                    [...Array(skeletonCount)].map(
+                                        (_, index) => (
+                                            <TableRow key={`skeleton-${index}`}>
+                                                <TableCell className="whitespace-nowrap p-4">
+                                                    <Skeleton className="h-5 w-32" />
+                                                </TableCell>
+                                                <TableCell className="whitespace-nowrap p-4">
+                                                    <Skeleton className="h-5 w-24" />
+                                                </TableCell>
+                                                <TableCell className="whitespace-nowrap p-4">
+                                                    <Skeleton className="h-5 w-20" />
+                                                </TableCell>
+                                                <TableCell className="whitespace-nowrap p-4">
+                                                    <Skeleton className="h-5 w-24" />
+                                                </TableCell>
+                                                <TableCell className="whitespace-nowrap p-4 text-right">
+                                                    <Button
+                                                        variant="ghost"
+                                                        size="icon"
+                                                        className="h-8 w-8"
+                                                        disabled
+                                                    >
+                                                        <MoreHorizontal className="h-4 w-4" />
+                                                    </Button>
+                                                </TableCell>
+                                            </TableRow>
+                                        ),
+                                    )
                                 ) : applications.length === 0 ? (
                                     <TableRow>
                                         <TableCell
-                                            colSpan={6}
-                                            className="whitespace-nowrap p-4 md:text-center text-sm text-muted-foreground"
+                                            colSpan={5}
+                                            className="whitespace-nowrap p-4 text-sm text-muted-foreground md:text-center"
                                         >
                                             No applications found.
                                         </TableCell>
                                     </TableRow>
                                 ) : (
                                     applications?.map((app, index) => (
-                                        <TableRow key={index} className="text-left">
+                                        <TableRow
+                                            key={index}
+                                            className="text-left"
+                                        >
                                             <TableCell className="whitespace-nowrap p-4 font-medium">
                                                 {app.company}
                                             </TableCell>
@@ -159,12 +159,11 @@ export default function RecentApplications() {
                                                     </span>
                                                 </Badge>
                                             </TableCell>
-                                            <TableCell className="whitespace-nowrap p-4">
-                                                {app.follow_up || "—"}
-                                            </TableCell>
                                             <TableCell className="whitespace-nowrap p-4 text-right">
                                                 <DropdownMenu>
-                                                    <DropdownMenuTrigger asChild>
+                                                    <DropdownMenuTrigger
+                                                        asChild
+                                                    >
                                                         <Button
                                                             variant="ghost"
                                                             size="icon"
