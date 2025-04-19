@@ -137,9 +137,6 @@ export default function ApplicationsPage() {
                             <TableHead className="w-32 whitespace-nowrap px-4 py-3">
                                 Status
                             </TableHead>
-                            <TableHead className="w-36 whitespace-nowrap px-4 py-3">
-                                Follow-up
-                            </TableHead>
                             <TableHead className="w-20 whitespace-nowrap px-4 py-3 text-right">
                                 Actions
                             </TableHead>
@@ -159,9 +156,6 @@ export default function ApplicationsPage() {
                                         <Skeleton className="h-5 w-24" />
                                     </TableCell>
                                     <TableCell className="whitespace-nowrap p-4">
-                                        <Skeleton className="h-5 w-20" />
-                                    </TableCell>
-                                    <TableCell className="whitespace-nowrap p-4">
                                         <Skeleton className="h-5 w-24" />
                                     </TableCell>
                                     <TableCell className="whitespace-nowrap p-4 text-right">
@@ -179,7 +173,7 @@ export default function ApplicationsPage() {
                         ) : filteredApplications.length === 0 ? (
                             <TableRow>
                                 <TableCell
-                                    colSpan={6}
+                                    colSpan={5}
                                     className="whitespace-nowrap p-4 text-sm text-muted-foreground md:text-center"
                                 >
                                     No applications found.
@@ -208,9 +202,6 @@ export default function ApplicationsPage() {
                                                 {app.status}
                                             </span>
                                         </Badge>
-                                    </TableCell>
-                                    <TableCell className="whitespace-nowrap p-4">
-                                        {app.follow_up || "—"}
                                     </TableCell>
                                     <TableCell className="whitespace-nowrap p-4 text-right">
                                         <DropdownMenu>
