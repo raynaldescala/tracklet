@@ -28,7 +28,9 @@ export function ApplicationsProvider({ children }) {
 
             setSkeletonCount(data?.length || 0);
 
-            await new Promise((resolve) => setTimeout(resolve, 300));
+            if (data?.length > 0)
+                await new Promise((resolve) => setTimeout(resolve, 300));
+
             setApplications(data);
         } catch (error) {
             toast.error("Error fetching applications");
