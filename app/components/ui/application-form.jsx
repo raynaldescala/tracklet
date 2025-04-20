@@ -90,7 +90,7 @@ export default function ApplicationForm({ children }) {
                 setOpen(false);
                 toast.success("Application added successfully");
 
-                getApplications(true);
+                getApplications();
             }
         } catch (error) {
             toast.error("An unexpected error occurred");

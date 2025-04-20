@@ -13,30 +13,20 @@ export function ApplicationsProvider({ children }) {
     const [skeletonCount, setSkeletonCount] = useState(1);
     const pathname = usePathname();
 
-    async function getApplications(shouldAddRow) {
+    async function getApplications() {
         if (pathname !== "/applications" && pathname !== "/dashboard") return;
 
         setIsLoading(true);
         setSkeletonCount(1);
 
         try {
-            const DASHBOARD_APPLICATIONS_LIMIT = 5;
-            const ADD_ROW_COUNT = 1;
             let data = [];
 
-            if (pathname === "/dashboard")
-                data = await fetchApplications(DASHBOARD_APPLICATIONS_LIMIT);
+            if (pathname === "/dashboard") data = await fetchApplications(5);
             else if (pathname === "/applications")
                 data = await fetchApplications();
 
-            const extraCount =
-                pathname === "/dashboard" &&
-                data?.length >= DASHBOARD_APPLICATIONS_LIMIT
-                    ? 0
-                    : shouldAddRow
-                      ? ADD_ROW_COUNT
-                      : 0;
-            setSkeletonCount((data?.length || 0) + extraCount);
+            setSkeletonCount(data?.length || 0);
 
             await new Promise((resolve) => setTimeout(resolve, 300));
             setApplications(data);
