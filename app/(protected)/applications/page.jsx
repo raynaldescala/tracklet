@@ -31,6 +31,7 @@ import {
 import { useApplications } from "@/app/contexts/applications-context";
 import { format } from "date-fns";
 import { Eye, MoreHorizontal, Pencil, Search, Trash2 } from "lucide-react";
+import Link from "next/link";
 import { useEffect, useState } from "react";
 
 const getStatusBadge = (status) => {
@@ -215,9 +216,14 @@ export default function ApplicationsPage() {
                                                 </Button>
                                             </DropdownMenuTrigger>
                                             <DropdownMenuContent align="end">
-                                                <DropdownMenuItem>
-                                                    <Eye className="mr-1 h-4 w-4" />{" "}
-                                                    View Details
+                                                <DropdownMenuItem asChild>
+                                                    <Link
+                                                        href={`/applications/${app.id}`}
+                                                        className="flex items-center gap-2"
+                                                    >
+                                                        <Eye className="mr-1 h-4 w-4" />{" "}
+                                                        View Details
+                                                    </Link>
                                                 </DropdownMenuItem>
                                                 <DropdownMenuItem>
                                                     <Pencil className="mr-1 h-4 w-4" />{" "}
