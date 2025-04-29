@@ -11,6 +11,8 @@ import {
 } from "@/app/components/ui/card";
 import { Separator } from "@/app/components/ui/separator";
 import { Textarea } from "@/app/components/ui/textarea";
+import { fetchApplicationById } from "@/lib/supabase/applications/actions";
+import { format } from "date-fns";
 import {
     ArrowLeft,
     Calendar,
@@ -21,12 +23,24 @@ import {
     Trash,
 } from "lucide-react";
 import Link from "next/link";
-import { use, useState } from "react";
+import { use, useEffect, useState } from "react";
 
 export default function ApplicationDetailsPage({ params }) {
     const [application, setApplication] = useState(null);
-
     const { id } = use(params);
+
+    useEffect(() => {
+        async function getApplication() {
+            try {
+                const data = await fetchApplicationById(id);
+                setApplication(data);
+            } catch (error) {
+                console.error("Error fetching application:", error);
+            }
+        }
+
+        getApplication();
+    }, [id]);
 
     const getStatusBadge = (status) => {
         switch (status) {
@@ -56,9 +70,11 @@ export default function ApplicationDetailsPage({ params }) {
                 <div className="flex flex-col justify-between gap-4 sm:flex-row">
                     <div>
                         <h2 className="text-3xl font-bold tracking-tight">
-                            Frontend Developer
+                            {application?.position}
                         </h2>
-                        <p className="text-muted-foreground">Acne Inc.</p>
+                        <p className="text-muted-foreground">
+                            {application?.company}
+                        </p>
                     </div>
                     <div className="flex items-center gap-2">
                         <Button
@@ -96,7 +112,7 @@ export default function ApplicationDetailsPage({ params }) {
                                     className={`font-semibold ${getStatusBadge("Applied")}`}
                                 >
                                     <span className="text-slate-100">
-                                        Applied
+                                        {application?.status}
                                     </span>
                                 </Badge>
                             </div>
@@ -106,7 +122,13 @@ export default function ApplicationDetailsPage({ params }) {
                                 </p>
                                 <div className="flex items-center">
                                     <Calendar className="mr-2 h-4 w-4 text-muted-foreground" />
-                                    <p>Mar 15, 2025</p>
+                                    <p>
+                                        {application?.date_applied &&
+                                            format(
+                                                application.date_applied,
+                                                "MMM d, yyyy",
+                                            )}
+                                    </p>
                                 </div>
                             </div>
                         </div>
@@ -118,7 +140,10 @@ export default function ApplicationDetailsPage({ params }) {
                                 </p>
                                 <div className="flex items-center">
                                     <MapPin className="mr-2 h-4 w-4 text-muted-foreground" />
-                                    <p>Makati</p>
+                                    <p>
+                                        {application?.location ||
+                                            "No location provided"}
+                                    </p>
                                 </div>
                             </div>
                             <div>
@@ -127,7 +152,10 @@ export default function ApplicationDetailsPage({ params }) {
                                 </p>
                                 <div className="flex items-center">
                                     <Tag className="mr-2 h-4 w-4 text-muted-foreground" />
-                                    <p>LinkedIn</p>
+                                    <p>
+                                        {application?.source ||
+                                            "No source provided"}
+                                    </p>
                                 </div>
                             </div>
                             <div>
@@ -136,18 +164,24 @@ export default function ApplicationDetailsPage({ params }) {
                                 </p>
                                 <div className="flex items-center">
                                     <ExternalLink className="mr-2 h-4 w-4 text-muted-foreground" />
-                                    <Button
-                                        asChild
-                                        variant="link"
-                                        className="h-fit p-0 text-base"
-                                    >
-                                        <Link
-                                            target="_blank"
-                                            href="https://site.com/..."
+                                    {application?.application_link ? (
+                                        <Button
+                                            asChild
+                                            variant="link"
+                                            className="h-fit p-0 text-base"
                                         >
-                                            https://site.com/...
-                                        </Link>
-                                    </Button>
+                                            <Link
+                                                target="_blank"
+                                                href={
+                                                    application.application_link
+                                                }
+                                            >
+                                                {application.application_link}
+                                            </Link>
+                                        </Button>
+                                    ) : (
+                                        <p>No link provided</p>
+                                    )}
                                 </div>
                             </div>
                         </div>
@@ -174,11 +208,16 @@ export default function ApplicationDetailsPage({ params }) {
                             <div className="absolute -start-1.5 mt-1.5 h-3 w-3 rounded-full bg-primary"></div>
                             <h3 className="font-semibold">Applied</h3>
                             <time className="mb-2 block text-sm font-normal leading-none text-muted-foreground">
-                                Mar 15, 2023
+                                {application?.date_applied &&
+                                    format(
+                                        application.date_applied,
+                                        "MMM d, yyyy",
+                                    )}
                             </time>
                             <p className="mb-4 text-sm">
-                                Applied for Frontend Developer position at Acme
-                                Inc
+                                {application?.position &&
+                                    application?.company &&
+                                    `Applied for ${application.position} position at ${application.company}`}
                             </p>
                         </li>
                     </ol>
@@ -198,6 +237,8 @@ export default function ApplicationDetailsPage({ params }) {
                         placeholder="Add notes about this application..."
                         rows="8"
                         className="mb-6 resize-none"
+                        value={application?.notes || ""}
+                        readOnly
                     />
                     <Button className="w-fit">Save Notes</Button>
                 </CardContent>
