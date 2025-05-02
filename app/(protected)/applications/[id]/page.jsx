@@ -11,7 +11,7 @@ import {
 } from "@/app/components/ui/card";
 import { Separator } from "@/app/components/ui/separator";
 import { Textarea } from "@/app/components/ui/textarea";
-import { fetchApplicationById } from "@/lib/supabase/applications/actions";
+import { fetchApplicationById, updateApplicationNotes } from "@/lib/supabase/applications/actions";
 import { format } from "date-fns";
 import {
     ArrowLeft,
@@ -24,9 +24,11 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { use, useEffect, useState } from "react";
+import { toast } from "sonner";
 
 export default function ApplicationDetailsPage({ params }) {
     const [application, setApplication] = useState(null);
+    const [notes, setNotes] = useState("");
     const { id } = use(params);
 
     useEffect(() => {
@@ -34,6 +36,7 @@ export default function ApplicationDetailsPage({ params }) {
             try {
                 const data = await fetchApplicationById(id);
                 setApplication(data);
+                setNotes(data?.notes || "")
             } catch (error) {
                 console.error("Error fetching application:", error);
             }
@@ -41,6 +44,21 @@ export default function ApplicationDetailsPage({ params }) {
 
         getApplication();
     }, [id]);
+
+    async function handleSaveNotes() {
+        try {
+            const result = await updateApplicationNotes(id, notes);
+            if (result.error) {
+                toast.error("Failed to update notes: " + result.error);
+            } else {
+                toast.success("Notes updated successfully");
+                setApplication(prev => ({ ...prev, notes }));
+            }
+        }
+        catch (error) {
+            toast.error("An unexpected error occured")
+        }
+    }
 
     const getStatusBadge = (status) => {
         switch (status) {
@@ -237,10 +255,10 @@ export default function ApplicationDetailsPage({ params }) {
                         placeholder="Add notes about this application..."
                         rows="8"
                         className="mb-6 resize-none"
-                        value={application?.notes || ""}
-                        readOnly
+                        value={notes}
+                        onChange={(e) => setNotes(e.target.value)}
                     />
-                    <Button className="w-fit">Save Notes</Button>
+                    <Button className="w-fit" onClick={handleSaveNotes}>Save Notes</Button>
                 </CardContent>
             </Card>
         </div>
