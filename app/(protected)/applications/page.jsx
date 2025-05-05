@@ -1,5 +1,16 @@
 "use client";
 
+import {
+    AlertDialog,
+    AlertDialogAction,
+    AlertDialogCancel,
+    AlertDialogContent,
+    AlertDialogDescription,
+    AlertDialogFooter,
+    AlertDialogHeader,
+    AlertDialogTitle,
+} from "@/app/components/ui/alert-dialog";
+
 import ApplicationForm from "@/app/components/ui/application-form";
 import { Badge } from "@/app/components/ui/badge";
 import { Button } from "@/app/components/ui/button";
@@ -29,10 +40,19 @@ import {
     TableRow,
 } from "@/app/components/ui/table";
 import { useApplications } from "@/app/contexts/applications-context";
+import { deleteApplication } from "@/lib/supabase/applications/actions";
 import { format } from "date-fns";
-import { Eye, MoreHorizontal, Pencil, Search, Trash2 } from "lucide-react";
+import {
+    Eye,
+    Loader2,
+    MoreHorizontal,
+    Pencil,
+    Search,
+    Trash2,
+} from "lucide-react";
 import Link from "next/link";
 import { useEffect, useState } from "react";
+import { toast } from "sonner";
 
 const getStatusBadge = (status) => {
     switch (status) {
@@ -52,6 +72,10 @@ const getStatusBadge = (status) => {
 export default function ApplicationsPage() {
     const [searchQuery, setSearchQuery] = useState("");
     const [statusFilter, setStatusFilter] = useState("all");
+    const [openDropdownId, setOpenDropdownId] = useState(null);
+    const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+    const [applicationToDelete, setApplicationToDelete] = useState(null);
+    const [isDeleting, setIsDeleting] = useState(false);
     const { applications, isLoading, skeletonCount, getApplications } =
         useApplications();
 
@@ -69,6 +93,26 @@ export default function ApplicationsPage() {
 
         return matchesSearch && matchesStatus;
     });
+
+    async function handleDelete(id) {
+        setIsDeleting(true);
+
+        try {
+            const result = await deleteApplication(id);
+            if (result.error)
+                toast.error("Failed to delete application: " + result.error);
+            else if (result.success) {
+                toast.success("Application deleted successfully");
+                setDeleteDialogOpen(false);
+
+                getApplications();
+            }
+        } catch (error) {
+            toast.error("An unexpected error occurred");
+        } finally {
+            setIsDeleting(false);
+        }
+    }
 
     return (
         <div className="grid gap-6 duration-500 animate-in fade-in">
@@ -181,8 +225,8 @@ export default function ApplicationsPage() {
                                 </TableCell>
                             </TableRow>
                         ) : (
-                            filteredApplications?.map((app, index) => (
-                                <TableRow key={index} className="text-left">
+                            filteredApplications?.map((app) => (
+                                <TableRow key={app.id} className="text-left">
                                     <TableCell className="whitespace-nowrap p-4 font-medium">
                                         {app.company}
                                     </TableCell>
@@ -205,7 +249,14 @@ export default function ApplicationsPage() {
                                         </Badge>
                                     </TableCell>
                                     <TableCell className="whitespace-nowrap p-4 text-right">
-                                        <DropdownMenu>
+                                        <DropdownMenu
+                                            open={openDropdownId === app.id}
+                                            onOpenChange={(open) => {
+                                                setOpenDropdownId(
+                                                    open ? app.id : null,
+                                                );
+                                            }}
+                                        >
                                             <DropdownMenuTrigger asChild>
                                                 <Button
                                                     variant="ghost"
@@ -230,7 +281,18 @@ export default function ApplicationsPage() {
                                                     Edit Application
                                                 </DropdownMenuItem>
                                                 <DropdownMenuSeparator />
-                                                <DropdownMenuItem>
+                                                <DropdownMenuItem
+                                                    onSelect={(e) => {
+                                                        e.preventDefault();
+                                                        setOpenDropdownId(null);
+                                                        setApplicationToDelete(
+                                                            app,
+                                                        );
+                                                        setDeleteDialogOpen(
+                                                            true,
+                                                        );
+                                                    }}
+                                                >
                                                     <Trash2 className="mr-1 h-4 w-4" />{" "}
                                                     Delete Application
                                                 </DropdownMenuItem>
@@ -243,6 +305,41 @@ export default function ApplicationsPage() {
                     </TableBody>
                 </Table>
             </div>
+            <AlertDialog
+                open={deleteDialogOpen}
+                onOpenChange={setDeleteDialogOpen}
+            >
+                <AlertDialogContent>
+                    <AlertDialogHeader>
+                        <AlertDialogTitle>
+                            Are you absolutely sure?
+                        </AlertDialogTitle>
+                        <AlertDialogDescription>
+                            This action will permanently remove this
+                            application.
+                        </AlertDialogDescription>
+                    </AlertDialogHeader>
+                    <AlertDialogFooter>
+                        <AlertDialogCancel disabled={isDeleting}>
+                            Cancel
+                        </AlertDialogCancel>
+                        <AlertDialogAction
+                            onClick={(e) => {
+                                e.preventDefault();
+                                handleDelete(applicationToDelete?.id);
+                            }}
+                            className="w-[86px]"
+                            disabled={isDeleting}
+                        >
+                            {isDeleting ? (
+                                <Loader2 className="h-4 w-4 animate-spin text-primary-foreground/80 dark:text-muted-foreground" />
+                            ) : (
+                                "Confirm"
+                            )}
+                        </AlertDialogAction>
+                    </AlertDialogFooter>
+                </AlertDialogContent>
+            </AlertDialog>
         </div>
     );
 }
