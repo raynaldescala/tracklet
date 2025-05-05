@@ -41,7 +41,7 @@ export default function ApplicationDetailsPage({ params }) {
         async function getApplication() {
             try {
                 const data = await fetchApplicationById(id);
-                console.log(data);
+
                 setApplication(data);
                 setNotes(data?.notes || "");
             } catch (error) {
