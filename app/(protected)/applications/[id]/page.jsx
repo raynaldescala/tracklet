@@ -1,5 +1,16 @@
 "use client";
 
+import {
+    AlertDialog,
+    AlertDialogAction,
+    AlertDialogCancel,
+    AlertDialogContent,
+    AlertDialogDescription,
+    AlertDialogFooter,
+    AlertDialogHeader,
+    AlertDialogTitle,
+    AlertDialogTrigger,
+} from "@/app/components/ui/alert-dialog";
 import { Badge } from "@/app/components/ui/badge";
 import { Button } from "@/app/components/ui/button";
 import {
@@ -13,6 +24,7 @@ import { Separator } from "@/app/components/ui/separator";
 import { Skeleton } from "@/app/components/ui/skeleton";
 import { Textarea } from "@/app/components/ui/textarea";
 import {
+    deleteApplication,
     fetchApplicationById,
     updateApplicationNotes,
 } from "@/lib/supabase/applications/actions";
@@ -28,14 +40,17 @@ import {
     Trash,
 } from "lucide-react";
 import Link from "next/link";
-import { use, useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
+import { use, useEffect, useState, useTransition } from "react";
 import { toast } from "sonner";
 
 export default function ApplicationDetailsPage({ params }) {
     const [application, setApplication] = useState(null);
     const [isLoading, setIsLoading] = useState(true);
     const [notes, setNotes] = useState("");
+    const [isPending, startTransition] = useTransition();
     const { id } = use(params);
+    const router = useRouter();
 
     useEffect(() => {
         async function getApplication() {
@@ -69,6 +84,22 @@ export default function ApplicationDetailsPage({ params }) {
             toast.error("An unexpected error occured");
         } finally {
             setIsLoading(false);
+        }
+    }
+
+    async function handleDelete(id) {
+        try {
+            const result = await deleteApplication(id);
+            if (result.error) {
+                toast.error("Failed to delete application: " + result.error);
+            } else if (result.success) {
+                toast.success("Application deleted successfully");
+                startTransition(() => {
+                    router.push("/applications");
+                });
+            }
+        } catch (error) {
+            toast.error("An unexpected error occured" + error);
         }
     }
 
@@ -122,13 +153,38 @@ export default function ApplicationDetailsPage({ params }) {
                         >
                             <Edit className="h-4 w-4" />
                         </Button>
-                        <Button
-                            variant="destructive"
-                            className="h-9 w-9 sm:h-10 sm:w-10"
-                            disabled={isLoading}
-                        >
-                            <Trash className="h-4 w-4" />
-                        </Button>
+                        <AlertDialog>
+                            <AlertDialogTrigger asChild>
+                                <Button
+                                    variant="destructive"
+                                    className="h-9 w-9 sm:h-10 sm:w-10"
+                                    disabled={isLoading}
+                                >
+                                    <Trash className="h-4 w-4" />
+                                </Button>
+                            </AlertDialogTrigger>
+                            <AlertDialogContent>
+                                <AlertDialogHeader>
+                                    <AlertDialogTitle>
+                                        Are you absolutely sure?
+                                    </AlertDialogTitle>
+                                    <AlertDialogDescription>
+                                        This action will permanently remove this
+                                        application.
+                                    </AlertDialogDescription>
+                                </AlertDialogHeader>
+                                <AlertDialogFooter>
+                                    <AlertDialogCancel>
+                                        Cancel
+                                    </AlertDialogCancel>
+                                    <AlertDialogAction
+                                        onClick={() => handleDelete(id)}
+                                    >
+                                        Confirm
+                                    </AlertDialogAction>
+                                </AlertDialogFooter>
+                            </AlertDialogContent>
+                        </AlertDialog>
                     </div>
                 </div>
             </div>
