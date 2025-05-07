@@ -47,8 +47,10 @@ import { toast } from "sonner";
 export default function ApplicationDetailsPage({ params }) {
     const [application, setApplication] = useState(null);
     const [isLoading, setIsLoading] = useState(true);
+    const [isDeleting, setIsDeleting] = useState(false);
     const [notes, setNotes] = useState("");
     const [isPending, startTransition] = useTransition();
+    const [isAlertOpen, setIsAlertOpen] = useState(false);
     const { id } = use(params);
     const router = useRouter();
 
@@ -88,10 +90,12 @@ export default function ApplicationDetailsPage({ params }) {
     }
 
     async function handleDelete(id) {
+        setIsDeleting(true);
         try {
             const result = await deleteApplication(id);
             if (result.error) {
                 toast.error("Failed to delete application: " + result.error);
+                setIsDeleting(false);
             } else if (result.success) {
                 toast.success("Application deleted successfully");
                 startTransition(() => {
@@ -100,6 +104,7 @@ export default function ApplicationDetailsPage({ params }) {
             }
         } catch (error) {
             toast.error("An unexpected error occured" + error);
+            setIsDeleting(false);
         }
     }
 
@@ -118,12 +123,14 @@ export default function ApplicationDetailsPage({ params }) {
         }
     };
 
+    const isPageDisabled = isLoading || isDeleting || isAlertOpen;
+
     return (
         <div className="mx-auto grid max-w-5xl gap-6 py-6">
             <div>
                 <Link
                     href="/applications"
-                    className="flex w-fit items-center gap-2 text-sm text-muted-foreground/70 transition-colors hover:text-accent-foreground/70"
+                    className={`flex w-fit items-center gap-2 text-sm text-muted-foreground/70 transition-colors hover:text-accent-foreground/70 ${isPageDisabled ? "pointer-events-none opacity-50" : ""}`}
                 >
                     <ArrowLeft className="h-4 w-4" />
                     Back
@@ -149,16 +156,19 @@ export default function ApplicationDetailsPage({ params }) {
                         <Button
                             variant="outline"
                             className="h-9 w-9 sm:h-10 sm:w-10"
-                            disabled={isLoading}
+                            disabled={isPageDisabled}
                         >
                             <Edit className="h-4 w-4" />
                         </Button>
-                        <AlertDialog>
+                        <AlertDialog
+                            open={isAlertOpen}
+                            onOpenChange={setIsAlertOpen}
+                        >
                             <AlertDialogTrigger asChild>
                                 <Button
                                     variant="destructive"
                                     className="h-9 w-9 sm:h-10 sm:w-10"
-                                    disabled={isLoading}
+                                    disabled={isPageDisabled}
                                 >
                                     <Trash className="h-4 w-4" />
                                 </Button>
@@ -174,13 +184,18 @@ export default function ApplicationDetailsPage({ params }) {
                                     </AlertDialogDescription>
                                 </AlertDialogHeader>
                                 <AlertDialogFooter>
-                                    <AlertDialogCancel>
+                                    <AlertDialogCancel disabled={isDeleting}>
                                         Cancel
                                     </AlertDialogCancel>
                                     <AlertDialogAction
                                         onClick={() => handleDelete(id)}
+                                        disabled={isDeleting}
                                     >
-                                        Confirm
+                                        {isDeleting ? (
+                                            <Loader2 className="h-4 w-4 animate-spin" />
+                                        ) : (
+                                            "Confirm"
+                                        )}
                                     </AlertDialogAction>
                                 </AlertDialogFooter>
                             </AlertDialogContent>
@@ -281,6 +296,7 @@ export default function ApplicationDetailsPage({ params }) {
                                                 asChild
                                                 variant="link"
                                                 className="h-fit p-0 text-base"
+                                                disabled={isPageDisabled}
                                             >
                                                 <Link
                                                     target="_blank"
@@ -317,7 +333,7 @@ export default function ApplicationDetailsPage({ params }) {
                     </CardHeader>
                     <Button
                         className="mb-6 ml-6 mr-0 w-fit sm:mb-0 sm:ml-0 sm:mr-6"
-                        disabled={isLoading}
+                        disabled={isPageDisabled}
                     >
                         Add Event
                     </Button>
@@ -366,13 +382,15 @@ export default function ApplicationDetailsPage({ params }) {
                         className="mb-6 resize-none"
                         value={notes}
                         onChange={(e) => setNotes(e.target.value)}
-                        disabled={isLoading}
+                        disabled={isPageDisabled}
                     />
                     <Button
                         className="w-28"
                         onClick={handleSaveNotes}
                         disabled={
-                            isLoading || application?.notes === notes || !notes
+                            isPageDisabled ||
+                            application?.notes === notes ||
+                            !notes
                         }
                     >
                         {isLoading ? (
